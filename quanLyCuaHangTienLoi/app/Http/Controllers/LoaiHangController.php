@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\LoaiHang;
+use Exception;
 
 class LoaiHangController extends Controller
 {
@@ -71,7 +72,13 @@ class LoaiHangController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::statement('exec p_DeleteLoaiHang @malh = ?', [$id]);
-        return redirect()->route('nloaihang.index');
+        try{
+            DB::statement('exec p_DeleteLoaiHang @malh = ?', [$id]);
+            return redirect()->route('nloaihang.index');
+        }
+        catch(Exception $e){
+            return redirect()->route('nloaihang.index');
+        }
+        
     }
 }

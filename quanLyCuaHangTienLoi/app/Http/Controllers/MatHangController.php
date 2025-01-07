@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\MatHang;
 use App\Models\LoaiHang;
+use Exception;
 
 class MatHangController extends Controller
 {
@@ -88,7 +89,12 @@ class MatHangController extends Controller
      */
     public function destroy(string $id)
     {
-        DB::statement('exec p_DeleteMatHang @mamh = ?', [$id]);
-        return redirect()->route('nmathang.index');
+        try{
+            DB::statement('exec p_DeleteMatHang @mamh = ?', [$id]);
+            return redirect()->route('nmathang.index');
+        }
+        catch(Exception $e){
+            return redirect()->route('nmathang.index');
+        }
     }
 }
