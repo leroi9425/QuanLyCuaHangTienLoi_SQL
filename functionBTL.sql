@@ -14,7 +14,7 @@ as begin
 end
 
 --function trả về tiền lãi 
-alter function tienlai(@ngayvao date,@ngayra date)
+create function tienlai(@ngayvao date,@ngayra date)
 returns int
 as begin
 	declare @von int = 0
@@ -37,7 +37,7 @@ end
 
 ------------------------------- HOANG
 -- viet ham tinh so luong san pham duoc mua boi 1 khach hang
-alter function f_SanPhamHayMua(@makh char(10), @masp char(10))
+create function f_SanPhamHayMua(@makh char(10), @masp char(10))
 returns int
 as begin
 	declare @soluong int
@@ -64,6 +64,8 @@ as begin
 end
 
 ------------------------- DUC ANH
+alter table nhavien
+add luong float
 --function trả về lương của 1 nhân viên
 create function luong1NhanVien (@manv char(10))
 returns float
@@ -74,7 +76,7 @@ end
 select dbo.luong1NhanVien ('NV1')
 
 -- function kiểm tra thẻ tích điểm có tồn tại không
-alter function func_KTraTheTichDiem (@makh char(10)) 
+create function func_KTraTheTichDiem (@makh char(10)) 
 returns bit 
 as begin 
 	declare @count int 
@@ -97,7 +99,7 @@ end
 print dbo.fnc_TinhDiem(1400000)
 
 --function quy đổi từ điểm ra tiền
-alter function fnc_QuyDoiDiem (@idThe int)
+create function fnc_QuyDoiDiem (@idThe int)
 returns money 
 as begin 
 	declare @diem int, @count int

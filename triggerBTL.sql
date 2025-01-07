@@ -80,7 +80,7 @@ end
 
 
 -- trigger ko cho update so luong trong kho nho hon 0
-create trigger tri_UpdateSoLuongKoAm
+alter trigger tri_UpdateSoLuongKoAm
 on mathang for update
 as begin
 	declare dsmh cursor dynamic scroll 
@@ -93,7 +93,10 @@ as begin
 	begin
 		if(@soluongtrongkho < 0)
 		begin
-			rollback tran
+			delete from mathang where mamh = @mamh
+			
+			insert into mathang select * from deleted where mamh = @mamh
+
 			print N'bị lỗi do số lượng trong kho nhỏ hơn 0'
 		end
 		fetch next from dsmh into @mamh, @soluongtrongkho
@@ -101,6 +104,31 @@ as begin
 
 	close dsmh
 	deallocate dsmh
+end
+
+-- trigger ko cho insert loai hang bi trung
+alter trigger tri_loaihangkodctrung
+on loaihang for insert
+as begin
+	declare dsloaihang cursor scroll dynamic
+	for select * from inserted
+	open dsloaihang
+
+	declare @malh char(10), @tenlh nvarchar(50)
+	fetch first from dsloaihang into @malh, @tenlh
+	while(@@FETCH_STATUS=0)
+	begin
+		if(exists (select * from loaihang where tenlh = @tenlh and malh != @malh))
+		begin
+			delete from loaihang
+			where malh = @malh
+			print N'Ko thể nhập loại hàng đã trùng ' + @tenlh
+		end
+		fetch next from dsloaihang into @malh, @tenlh
+	end
+
+	close dsloaihang
+	deallocate dsloaihang
 end
 
 ----- DUC ANH
